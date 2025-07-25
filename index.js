@@ -3,61 +3,61 @@ import simpleGit from 'simple-git';
 import { faker } from '@faker-js/faker';
 
 const git = simpleGit();
-const path = './data.json';
+const file = './data.json';
 
-// Generate 70–90 random dates in 2024
-const commitCount = Math.floor(Math.random() * (90 - 70 + 1)) + 70;
-const dates = [];
+// make 70-90 commits in 2024
+const numCommits = Math.floor(Math.random() * 21) + 70;
+const commitDates = [];
 
-while (dates.length < commitCount) {
-  const month = Math.floor(Math.random() * 12); // 0–11
+while (commitDates.length < numCommits) {
+  const month = Math.floor(Math.random() * 12); // Jan–Dec
   const day = Math.floor(Math.random() * 28) + 1;
-  const hour = Math.floor(Math.random() * (23 - 9 + 1)) + 9;
+  const hour = Math.floor(Math.random() * (18 - 9 + 1)) + 9; // 9AM–6PM
   const minute = Math.floor(Math.random() * 60);
 
   const date = new Date(Date.UTC(2024, month, day, hour, minute));
-  dates.push(date.toISOString());
+  commitDates.push(date.toISOString());
 }
 
-// Realistic commit messages
-const commitMessages = [
-  'fix: resolve bug in user auth flow',
-  'feat: add dark mode toggle',
-  'chore: update dependencies',
-  'refactor: simplify navbar logic',
-  'docs: update README.md',
-  'style: format CSS variables',
-  'feat: add project filtering',
-  'fix: responsive layout issue on mobile',
-  'perf: optimize image loading',
-  'test: add unit tests for utils',
-  'feat: implement lazy loading',
-  'chore: clean up unused assets',
-  'fix: typo in env config',
-  'refactor: move helper functions',
-  'style: improve code formatting',
+// more chill messages like a student might use
+const messages = [
+  'update stuff',
+  'fix small bug',
+  'add some features',
+  'testing things out',
+  'forgot to push earlier',
+  'cleaned up code',
+  'added comments',
+  'trying to fix layout',
+  'minor changes',
+  'pushing to save work',
+  'css tweaks',
+  'save progress',
+  'changed file structure a bit',
+  'fixed error',
+  'learning git lol',
 ];
 
-async function run() {
-  for (const date of dates) {
+async function doFakeCommits() {
+  for (const date of commitDates) {
     const data = { date };
-    const message = faker.helpers.arrayElement(commitMessages);
 
     try {
-      await jsonfile.writeFile(path, data);
-      await git.add([path]);
-      await git.commit(message, undefined, { '--date': date });
+      await jsonfile.writeFile(file, data); // just to change something
+      const msg = faker.helpers.arrayElement(messages);
+      await git.add([file]);
+      await git.commit(msg, undefined, { '--date': date });
     } catch (err) {
-      console.error('Commit error:', err);
+      console.log('❌ Error committing:', err);
     }
   }
 
   try {
     await git.push();
-    console.log(`✅ Successfully pushed ${commitCount} commits.`);
+    console.log(`✅ Pushed ${numCommits} fake commits to GitHub`);
   } catch (err) {
-    console.error('Push error:', err);
+    console.log('❌ Push failed:', err);
   }
 }
 
-run();
+doFakeCommits();
